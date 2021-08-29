@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <list>
 #include "matrix.h"
+#include "IntIterator.h"
 
 using namespace std;
 
@@ -49,6 +50,16 @@ int main()
         }
             
         Matrix m(arr, 3);
-        cout << endl << endl << m.getDeterminant();
+        cout << endl << endl << m.getDeterminant() << endl;
+    }
+
+    //task3
+    {
+        int numbers[] = { 2,3,2,8,9 };
+        IntIterator<5> intIt(numbers);
+
+        for (IntIterator<5> it = intIt.begin(); it != intIt.end(); it++) {
+            cout << " " << it.val();
+        }
     }
 }
