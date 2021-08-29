@@ -6,32 +6,33 @@ class Matrix {
 		int cols;
 		float deternminant;
 
-		float getDeterminant(float** arr, int n) const {
-			if (n == 2) {
-				return arr[0][0] * arr[1][1] - arr[1][0] * arr[0][1];
+		float getDeterminant(float** matrixArr, int mSize) const {
+			if (mSize == 2) {
+				return matrixArr[0][0] * matrixArr[1][1] - matrixArr[1][0] * matrixArr[0][1];
 			}
 			int sign = 1;
-			int k = 0, l = 0;
+			int submatrixCol = 0, subMatrixRow = 0;
 			float sum = 0;
 			
-			for (int i = 0; i < n; i++) {
-				float** subArray = new float* [n - 1];
-				for (int i = 0; i < n-1; i++) {
-					subArray[i] = new float[n-1];
+			for (int i = 0; i < mSize; i++) {
+				float** subMatrixArr = new float* [mSize - 1];
+				for (int i = 0; i < mSize - 1; i++) {
+					subMatrixArr[i] = new float[mSize - 1];
 				}
-				for (int j = 1; j < n; j++) {
-					for (int m = 0; m < n; m++) {
-						if (i != m) {
-							subArray[l][k] = arr[j][m];
-							k++;
+				for (int j = 1; j < mSize; j++) {
+					for (int k = 0; k < mSize; k++) {
+						if (i != k) {
+							subMatrixArr[subMatrixRow][submatrixCol] = matrixArr[j][k];
+							submatrixCol++;
 						}
 					}
-					l++;
-					k = 0;
+					subMatrixRow++;
+					submatrixCol = 0;
 				}
-				l = 0;
+				subMatrixRow = 0;
 				
-				sum += arr[0][i] * sign * getDeterminant(subArray, n - 1);
+				Matrix subMatrix(subMatrixArr, mSize - 1);
+				sum += matrixArr[0][i] * sign * subMatrix.getDeterminant();
 				sign *= -1;
 			}
 			return sum;
@@ -39,6 +40,13 @@ class Matrix {
 	public:
 		Matrix(float** arr, int n) {
 			deternminant = getDeterminant(arr, n);
+		}
+
+		~Matrix() {
+			for (int i = 0; i < cols; i++) {
+				delete[] matrix[i];
+			}
+			delete[] matrix;
 		}
 
 		float getDeterminant() const {
