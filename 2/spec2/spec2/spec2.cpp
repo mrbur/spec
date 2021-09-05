@@ -1,6 +1,8 @@
-﻿#include <iostream>
+#include <iostream>
 #include <vector>
 #include <algorithm> 
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -56,35 +58,50 @@ int main()
 
     //task3
     {
-        string str = "Война и мир";
+        const string name = "book";
+        string line;
+        int count_if_count_find = 0;
+        int count_if_count_for = 0;
+        int for_count_find = 0;
+        int for_count_for = 0;
 
-        cout << endl << endl << "Count = " << count_if(str.begin(), str.end(), isVowel) << endl;
 
-        cout << "Count = " << count_if(str.begin(), str.end(), [](char c) {
-            for (size_t i = 0; i < vowelsChars.size(); i++) {
-                if (vowelsChars[i] == c) return true;
-            }
-            return false;
-        })  << endl;
+        ifstream book(name);
 
-        int count = 0;
-        for (size_t i = 0; i < str.size(); i++) {
-            if (vowelsChars.find(str[i]) != -1) {
-                count++;
-            }
-        }
-        cout << "Count = " << count << endl;
+        if ((book).is_open()) {
+            while (!book.eof()) {
+                book >> line;
+                
+                count_if_count_find += count_if(line.begin(), line.end(), isVowel);
 
-        count = 0;
-        for (size_t i = 0; i < str.size(); i++) {
-            for (size_t j = 0; j < vowelsChars.size(); j++) {
-                if (str[i] == vowelsChars[j]) {
-                    count++;
-                    break;
+                count_if_count_for += count_if(line.begin(), line.end(), [](char c) {
+                    for (size_t i = 0; i < vowelsChars.size(); i++) {
+                        if (vowelsChars[i] == c) return true;
+                    }
+                    return false;
+                    });
+
+                for (size_t i = 0; i < line.size(); i++) {
+                    if (vowelsChars.find(line[i]) != -1) {
+                        for_count_find++;
+                    }
+                }
+
+                for (size_t i = 0; i < line.size(); i++) {
+                    for (size_t j = 0; j < vowelsChars.size(); j++) {
+                        if (line[i] == vowelsChars[j]) {
+                            for_count_for++;
+                            break;
+                        }
+                    }
                 }
             }
         }
-        cout << "Count = " << count << endl;
+
+        cout << endl << endl << "count_if_count_find = " << count_if_count_find << endl;
+        cout << endl << endl << "count_if_count_for = " << count_if_count_for << endl;
+        cout << endl << endl << "for_count_find = " << for_count_find << endl;
+        cout << endl << endl << "for_count_for = " << for_count_for << endl;
     }
 }
 
