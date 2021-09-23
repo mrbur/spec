@@ -1,69 +1,49 @@
 ﻿#include <iostream>
 #include "pcout.h"
-#include <chrono>
-#include <thread>
-#include <vector>
-#include <mutex>
+#include "SimpleNumCounter.h"
+#include <algorithm>
 
 using namespace std;
 
-class SimpleNumCounter {
+class House {
 private:
-    mutex nextNumToCheckFlag;
-    mutex nextNumToCountFlag;
-    long simpleNumNeeded = 0;
-    long currentNum = 2;
-    long count = 0;
-    int maxThreads = std::thread::hardware_concurrency();
-
-    long incCount() {
-        const std::lock_guard<std::mutex> lock(nextNumToCountFlag);
-        return count++;
-    }
-    bool needNext() const {
-        return count < simpleNumNeeded;
-    }
-    bool isSimple(long num) {
-        if (num < 4) return true;
-        if (num % 2 == 0) return false;
-
-        long to = num;
-        if (num > 5) to = num / 2;
-        for (long i = 3; i < to; i += 2) {
-            if (num % i == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    void print() {
-        while (count < simpleNumNeeded)
-        {
-            pcout << "current count is " << count << '\n';
-        }
-    }
-
-    void search() {
-        while (1)
-        {
-            if (isSimple(currentNum)) {
-                count++;
-            }
-            if (count == simpleNumNeeded) {
-                break;
-            }
-            currentNum++;
-        }
-    }
+    vector<int> stuf = {9, 44, 8, 11};
+    mutex flagPush;
+    mutex flagPop;
 public:
-    long findSimple(long i) {
-        simpleNumNeeded = i;
-        thread st(&SimpleNumCounter::search, this);
-        thread pt(&SimpleNumCounter::print, this);
+    void thiefWork() {
+        while (true)
+        {
+            this_thread::sleep_for(std::chrono::seconds(1));
+            flagPop.lock();
+            stuf.pop_back();
+            flagPop.unlock();
+        }
+    }
+    void ownerWork() {
+        while (true)
+        {
+            this_thread::sleep_for(std::chrono::seconds(1));
+            flagPush.lock();
+            stuf.push_back(rand() % 100);
+            std::sort(stuf.begin(), stuf.end());
+            flagPush.unlock();
+        }
+    }
+    void run() {
+        thread st(&House::thiefWork, this);
+        thread pt(&House::ownerWork, this);
+        pcout << '\n';
+        while (true)
+        {
+            this_thread::sleep_for(std::chrono::seconds(1));
+            for (int i = 0; i < stuf.size(); i++) {
+                pcout << stuf[i] << " ";
+            }
+            pcout << '\n';
+        }
         st.join();
         pt.join();
-        return currentNum;
     }
 };
 
@@ -90,6 +70,11 @@ int main()
         SimpleNumCounter s;
         cout<< "num is " << s.findSimple(9);
     }
-
-    this_thread::sleep_for(std::chrono::seconds(20));
+    
+    //task3
+    {
+        House h;
+        h.run();
+    }
+    
 }
