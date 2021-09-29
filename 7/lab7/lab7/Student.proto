@@ -1,0 +1,7 @@
+syntax="proto3";
+
+message Student{
+    string fullName = 1;
+	repeated int32 grades = 2;
+    int32 averageGrade = 3;
+}
