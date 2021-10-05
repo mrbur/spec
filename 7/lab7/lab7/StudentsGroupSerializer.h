@@ -9,7 +9,7 @@ using namespace std;
 
 class IRepository {
 	virtual void Open() = 0; // бинарная десериализация в файл
-	virtual void Save() = 0; // бинарная сериализация в файл
+	virtual bool Save() = 0; // бинарная сериализация в файл
 };
 
 
@@ -25,9 +25,9 @@ private:
 public:
 	StudentsGroupSerializer(StudentsGroup* sg) : sg(sg){
 	}
-	void Save() {
+	bool Save() {
 		ofstream out("StudentsGroup.bin", ios_base::binary);
-		(*sg).SerializeToOstream(&out);
+		return (*sg).SerializeToOstream(&out);
 	}
 	void Open() {
 		ifstream in("StudentsGroup.bin", ios_base::binary);

@@ -5,10 +5,19 @@
 #include "StudentsGroup.pb.h"
 #include "StudentsGroupSerializer.h"
 #include "list"
+#include <gtest/gtest.h>
 
-int main()
+using namespace std;
+
+Student s;
+
+TEST(StudentTest, fullnameNotEmpty)
 {
-	Student s;
+	EXPECT_TRUE(s.fullname().size() > 0);
+}
+
+TEST(SudentGroup, SudentGroupSaveCheck)
+{
 	s.set_fullname("name");
 	list<Student> students;
 	students.push_back(s);
@@ -16,7 +25,15 @@ int main()
 	StudentsGroup sg;
 
 	StudentsGroupSerializer sgs(&sg);
-	sgs.Save();
+	EXPECT_TRUE(sgs.Save());
+}
 
-	return 0;
+int main()
+{
+	s.set_fullname("name");
+	list<Student> students;
+	students.push_back(s);
+
+	testing::InitGoogleTest();
+	return RUN_ALL_TESTS();
 }
