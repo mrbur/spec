@@ -1,0 +1,17 @@
+*.suo
+*.db
+*.ipch
+*.exe
+*.sln
+*.log
+*.ilk
+*.recipe
+*.pdb
+*.obj
+*.tlog
+*.txt
+*.idb
+*.vcxproj
+*.user
+*.filters
+*Browse*
